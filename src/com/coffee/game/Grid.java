@@ -11,8 +11,6 @@ public class Grid {
     private final int padding;
     private final Slot[] grid;
 
-    private TypeSlide moving = TypeSlide.Idle;
-
     public Grid(int size, int padding) {
         this.size = size;
         this.padding = padding;
@@ -33,13 +31,13 @@ public class Grid {
     }
 
     private void spawn() {
-        for(int y = 0; y < size; y++) {
-            for(int x = 0; x < size; x++) {
-                if(getSlot(x, y).isEmpty() && Engine.rand.nextInt(100) < 10) {
-                    getSlot(x, y).putNew();
-                }
-            }
-        }
+        int x;
+        int y;
+        do {
+            x = Engine.rand.nextInt(size);
+            y = Engine.rand.nextInt(size);
+        }while ((!getSlot(x, y).isEmpty()));
+        getSlot(x, y).putNew();
     }
 
     public Slot getSlot(int x, int y) {
@@ -52,84 +50,72 @@ public class Grid {
                 slot.tick();
         }
         boolean pressed = false;
-        if(Keyboard.KeyPressing("Space")) {
-            this.moving = slide(TypeSlide.values()[1+Engine.rand.nextInt(4)]);
-            pressed = true;
+        if(Keyboard.KeyPressed("W") || Keyboard.KeyPressed("Up")) {
+            pressed = slide(TypeSlide.Up);
+        }else if(Keyboard.KeyPressed("D") || Keyboard.KeyPressed("Right")) {
+            pressed = slide(TypeSlide.Right);
+        }else if(Keyboard.KeyPressed("S") || Keyboard.KeyPressed("Down")) {
+            pressed = slide(TypeSlide.Down);
+        }else if(Keyboard.KeyPressed("A") || Keyboard.KeyPressed("Left")) {
+            pressed =slide(TypeSlide.Left);
         }
-        if(Keyboard.KeyPressed("W") || Keyboard.KeyPressed("Up") || moving.equals(TypeSlide.Up)) {
-            this.moving = slide(TypeSlide.Up);
-            pressed = true;
-        }else if(Keyboard.KeyPressed("D") || Keyboard.KeyPressed("Right")|| moving.equals(TypeSlide.Right)) {
-            this.moving = slide(TypeSlide.Right);
-            pressed = true;
-        }else if(Keyboard.KeyPressed("S") || Keyboard.KeyPressed("Down")|| moving.equals(TypeSlide.Down)) {
-            this.moving = slide(TypeSlide.Down);
-            pressed = true;
-        }else if(Keyboard.KeyPressed("A") || Keyboard.KeyPressed("Left")|| moving.equals(TypeSlide.Left)) {
-            this.moving = slide(TypeSlide.Left);
-            pressed = true;
-        }
-        if(pressed && this.moving.equals(TypeSlide.Idle)) {
+        if(pressed) {
             spawn();
         }
     }
 
-    private TypeSlide slide(TypeSlide slide) {
-        TypeSlide moving = TypeSlide.Idle;
+    private boolean slide(TypeSlide slide) {
+        boolean slided = false;
         if(slide.equals(TypeSlide.Down)) {
-            for(int y = size - 2; y >= 0; y--) {
+            for(int y = size-2; y >= 0; y--) {
                 for(int x = 0; x < size; x++) {
-                    Slot curSlot = getSlot(x, y);
-                    Slot nextSlot = getSlot(x, y + 1);
-                    if(!curSlot.isEmpty()) {
-                        if(nextSlot.isEmpty() || curSlot.compareTo(nextSlot.content())) {
-                            if(!nextSlot.put(curSlot.pop()))
-                                moving = TypeSlide.Down;
-                        }
-                    }
+                    slided = swap(slide, x, y);
                 }
             }
         }else if(slide.equals(TypeSlide.Up)) {
             for(int y = 1; y < size; y++) {
                 for(int x = 0; x < size; x++) {
-                    Slot curSlot = getSlot(x, y);
-                    Slot nextSlot = getSlot(x, y - 1);
-                    if(!curSlot.isEmpty() ) {
-                        if(nextSlot.isEmpty() || curSlot.compareTo(nextSlot.content())) {
-                            if(!nextSlot.put(curSlot.pop()))
-                                moving = TypeSlide.Up;
-                        }
-                    }
+                    slided = swap(slide, x, y);
                 }
             }
         }else if(slide.equals(TypeSlide.Left)) {
             for(int y = 0; y < size; y++) {
                 for(int x = 1; x < size; x++) {
-                    Slot curSlot = getSlot(x, y);
-                    Slot nextSlot = getSlot(x - 1, y);
-                    if(!curSlot.isEmpty()) {
-                        if(nextSlot.isEmpty() || curSlot.compareTo(nextSlot.content())) {
-                            if(!nextSlot.put(curSlot.pop()))
-                                moving = TypeSlide.Left;
-                        }
-                    }
+                    slided = swap(slide, x, y);
                 }
             }
         }else if(slide.equals(TypeSlide.Right)) {
             for(int y = 0; y < size; y++) {
                 for(int x = size - 2; x >= 0; x--) {
-                    Slot curSlot = getSlot(x, y);
-                    Slot nextSlot = getSlot(x + 1, y);
-                    if(!curSlot.isEmpty()) {
-                        if(nextSlot.isEmpty() || curSlot.compareTo(nextSlot.content())) {
-                            if(!nextSlot.put(curSlot.pop()))
-                                moving = TypeSlide.Right;
-                        }
-                    }
+                    slided = swap(slide, x, y);
                 }
             }
         }
-        return moving;
+        return slided;
+    }
+
+    private boolean swap(TypeSlide dir, int x, int y) {
+        Slot curSlot = getSlot(x, y);
+        if(curSlot.isEmpty())
+            return true;
+        int nextX = x + dir.getNx();
+        int nextY = y + dir.getNy();
+        while((nextX >= 0 && nextX < size) && (nextY >= 0 && nextY < size)) {
+            if(getSlot(nextX, nextY).isEmpty()) {
+                nextX += dir.getNx();
+                nextY += dir.getNy();
+            }else if(getSlot(nextX, nextY).compareTo(curSlot)) {
+                getSlot(nextX, nextY).put(curSlot.pop());
+                return true;
+            }else {
+                break;
+            }
+        }
+        if((nextX-dir.getNx() != x || nextY-dir.getNy() != y) && getSlot(nextX-dir.getNx(), nextY-dir.getNy()).isEmpty()) {
+            getSlot(nextX - dir.getNx(), nextY - dir.getNy()).put(curSlot.pop());
+            return true;
+        }
+        return false;
     }
 
     public void render(Graphics2D g) {

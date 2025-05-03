@@ -15,14 +15,11 @@ public class Slot {
         return this.content == null;
     }
 
-    public boolean put(Box box) {
-        boolean added = false;
+    public void put(Box box) {
         if(box.equals(content)) {
             box.plusValue(this.content.getValue());
-            added = true;
         }
         this.content = box;
-        return added;
     }
 
     public Box content() {
@@ -42,17 +39,26 @@ public class Slot {
         return box;
     }
 
-    public boolean compareTo(Box box) {
-        return !isEmpty() && this.content.equals(box);
+    public boolean compareTo(Slot slot) {
+        return !isEmpty() && this.content.equals(slot.content);
     }
 
     public void tick() {
         if(!isEmpty()) {
             Point curP = this.content.getPosition();
-            int fluid = 2;
-            int nx = (bounds.x - curP.x)/fluid;
-            int ny = (bounds.y - curP.y)/fluid;
-            this.content.setPosition(curP.x + nx, curP.y + ny);
+            float fluid = 2;
+            float nx = (bounds.x - curP.x) / fluid;
+            float ny = (bounds.y - curP.y) / fluid;
+
+            float x = Math.abs(nx) < 1f ? bounds.x : curP.x + nx;
+            float y = Math.abs(ny) < 1f ? bounds.y : curP.y + ny;
+            this.content.setPosition((int)x, (int)y);
+            if(content.getBounds().width != this.bounds.width) {
+                float defaultSize = content.getBounds().width;
+                float dif = (bounds.width - defaultSize)/4;
+                float size = Math.abs(dif) < 1f ? bounds.width : defaultSize + dif;
+                content.getBounds().setSize((int)size, (int)size);
+            }
         }
     }
 

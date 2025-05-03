@@ -29,7 +29,7 @@ public class Box {
     private final Rectangle bounds;
 
     public Box(int size) {
-        this.bounds = new Rectangle(size, size);
+        this.bounds = new Rectangle(size/2, size/2);
         plusValue(2);
     }
 
@@ -39,6 +39,10 @@ public class Box {
 
     public int getValue() {
         return this.value;
+    }
+
+    public Rectangle getBounds() {
+        return this.bounds;
     }
 
     @Override

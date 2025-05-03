@@ -11,7 +11,7 @@ public class Game implements Activity {
 
     public Game(int size) {
         this.width = size;
-        this.grid = new Grid(size, 2);
+        this.grid = new Grid(size, 4);
     }
 
     @Override
