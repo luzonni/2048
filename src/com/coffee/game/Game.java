@@ -1,22 +1,36 @@
 package com.coffee.game;
 
 import com.coffee.engine.Activity;
+import com.coffee.engine.Keyboard;
 
 import java.awt.*;
 
 public class Game implements Activity {
 
     private int width;
-    private final Grid grid;
+    private int height;
+    private Grid grid;
 
-    public Game(int size) {
-        this.width = size;
-        this.grid = new Grid(size, 4);
+    public Game(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.grid = new Grid(width, height);
     }
 
     @Override
     public void tick() {
         grid.tick();
+        if(Keyboard.KeyPressed("ESCAPE")) {
+            restart();
+        }
+    }
+
+    private void restart() {
+        this.grid = new Grid(width, height);
+    }
+
+    private void gameOver() {
+
     }
 
     @Override

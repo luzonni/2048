@@ -26,8 +26,8 @@ public class Engine implements Runnable {
     public Engine() {
         FontG.addFont("Inter");
         rand = new Random();
-        window = new Window("2048", 600, 600);
-        this.activity = new Game(8);
+        window = new Window("2048", 800, 800);
+        this.activity = new Game(3, 5);
         start();
     }
 
@@ -40,7 +40,7 @@ public class Engine implements Runnable {
     private Graphics2D getGraphics() {
         Graphics2D graphics = (Graphics2D) Buffer.getDrawGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics.setColor(new Color(0xbeb0a3));
+        graphics.setColor(Color.black);
         graphics.fillRect(0, 0, window.getWidth(), window.getHeight());
         graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
         return graphics;

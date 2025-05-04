@@ -27,9 +27,11 @@ public class Box {
     };
 
     private final Rectangle bounds;
+    private double scale;
 
     public Box(int size) {
-        this.bounds = new Rectangle(size/2, size/2);
+        this.bounds = new Rectangle(size, size);
+        setScale(0.5);
         plusValue(2);
     }
 
@@ -37,8 +39,20 @@ public class Box {
         this.value += value;
     }
 
+    public void setValue(int value) {
+        this.value = value;
+    }
+
     public int getValue() {
         return this.value;
+    }
+
+    public double getScale() {
+        return this.scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
     }
 
     public Rectangle getBounds() {
@@ -65,13 +79,18 @@ public class Box {
         if(indexColor >= colors.length)
             indexColor = colors.length-1;
         g.setColor(colors[indexColor]);
-        g.fillRoundRect(bounds.x, bounds.y, bounds.width, bounds.height, 30, 30);
+        double width = bounds.width*scale;
+        double height = bounds.width*scale;
+        double x = bounds.x + (bounds.width - width)/2;
+        double y = bounds.y + (bounds.height - height)/2;
+        g.fillRoundRect((int)x, (int)y, (int)width, (int)height,  (int)(width*0.1), (int)(height*0.1));
         String value = String.valueOf(this.value);
-        Font font = FontG.font(FontG.Inter, (float)(bounds.width/(value.length()+1)));
+        Font font = FontG.font(FontG.Inter, (float)(width/2));
         int wf = FontG.getWidth(value, font);
         int hf = FontG.getHeight(value, font);
         g.setFont(font);
-        g.setColor(colors[(colors.length-1)-indexColor]);
+        Color colorFont = (indexColor < 2) ? Color.black : Color.white;
+        g.setColor(colorFont);
         g.drawString(value, bounds.x + bounds.width/2 - wf/2, bounds.y + bounds.height/2 + hf/2);
     }
 
