@@ -72,7 +72,7 @@ public class Grid {
             if(slot != null)
                 slot.tick();
         }
-        if(allDone())
+        if(allDone()) {
             if(Keyboard.KeyPressed("W") || Keyboard.KeyPressed("Up")) {
                 moved = slide(TypeSlide.Up);
             }else if(Keyboard.KeyPressed("D") || Keyboard.KeyPressed("Right")) {
@@ -82,9 +82,10 @@ public class Grid {
             }else if(Keyboard.KeyPressed("A") || Keyboard.KeyPressed("Left")) {
                 moved = slide(TypeSlide.Left);
             }
-        if(moved && allDone()) {
-            moved = false;
-            spawn();
+            if(moved) {
+                moved = false;
+                spawn();
+            }
         }
     }
 
@@ -155,7 +156,7 @@ public class Grid {
         gg.setColor(new Color(0xbeb0a3));
         gg.fillRoundRect(0, 0, this.bounds.width, this.bounds.height, (int)(this.bounds.width*0.05), (int)(this.bounds.height*0.05));
         for(Slot slot : grid) {
-                slot.render(gg);
+            slot.render(gg);
         }
         for(Slot slot : grid) {
             if(!slot.isEmpty())

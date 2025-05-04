@@ -9,6 +9,7 @@ import java.io.InputStream;
 public abstract class FontG {
 
     public static final int Inter = 0;
+    public static final int Rowdies = 1;
 
     private static Font[] font;
 
@@ -40,7 +41,7 @@ public abstract class FontG {
 
     public static int getHeight(String text, Font font) {
         FontRenderContext frc = new FontRenderContext(new AffineTransform(), false, false);
-        return (int)(font.getStringBounds(text, frc).getHeight() - 0.29*font.getSize());
+        return (int)(font.getStringBounds(text, frc).getHeight() - 0.5*font.getSize());
     }
 
     public static int getSize(int type) {

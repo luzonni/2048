@@ -85,7 +85,7 @@ public class Box {
         double y = bounds.y + (bounds.height - height)/2;
         g.fillRoundRect((int)x, (int)y, (int)width, (int)height,  (int)(width*0.1), (int)(height*0.1));
         String value = String.valueOf(this.value);
-        Font font = FontG.font(FontG.Inter, (float)(width/2));
+        Font font = FontG.font(FontG.Rowdies, (float)(width/2));
         int wf = FontG.getWidth(value, font);
         int hf = FontG.getHeight(value, font);
         g.setFont(font);

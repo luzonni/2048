@@ -1,14 +1,16 @@
 package com.coffee.game;
 
 import com.coffee.engine.Activity;
+import com.coffee.engine.Engine;
 import com.coffee.engine.Keyboard;
+import com.coffee.menu.Menu;
 
 import java.awt.*;
 
 public class Game implements Activity {
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     private Grid grid;
 
     public Game(int width, int height) {
@@ -21,7 +23,7 @@ public class Game implements Activity {
     public void tick() {
         grid.tick();
         if(Keyboard.KeyPressed("ESCAPE")) {
-            restart();
+            Engine.setActivity(new Menu());
         }
     }
 

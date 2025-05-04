@@ -1,6 +1,7 @@
 package com.coffee.engine;
 
 import com.coffee.game.Game;
+import com.coffee.menu.Menu;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -17,18 +18,22 @@ public class Engine implements Runnable {
 
     public static Window window;
 
-    public Activity activity;
+    private static Activity activity;
 
     public static BufferStrategy Buffer;
 
     public static Random rand;
 
     public Engine() {
-        FontG.addFont("Inter");
+        FontG.addFont("Inter", "Rowdies");
         rand = new Random();
         window = new Window("2048", 800, 800);
-        this.activity = new Game(3, 5);
+        setActivity(new Menu());
         start();
+    }
+
+    public static void setActivity(Activity activity) {
+        Engine.activity = activity;
     }
 
     public void start() {
